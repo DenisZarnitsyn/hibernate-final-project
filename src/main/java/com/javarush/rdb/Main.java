@@ -35,15 +35,15 @@ public class Main {
 
     public static void main(String[] args) {
         Main main = new Main();
-        List<City> allCities = main.fetchData(main);
+        List<City> allCities = main.fetchData(main.sessionFactory, main.cityDAO);
         for (City city : allCities) {
             System.out.println(city);
         }
         main.shutdown();
     }
 
-    private List<City> fetchData(Main main) {
-        return new DataFetcher().fetchData(main);
+    private List<City> fetchData(SessionFactory sessionFactory, CityDAO cityDAO) {
+        return new DataFetcher().fetchData(sessionFactory, cityDAO);
     }
 
     private void shutdown() {
@@ -56,7 +56,6 @@ public class Main {
     }
 
     private SessionFactory prepareRelationalDb() {
-        protected final SessionFactory sessionFactory;
         Properties properties = new Properties();
         properties.put(Environment.DIALECT, "org.hibernate.dialect.MySQL8Dialect");
         properties.put(Environment.DRIVER, "com.p6spy.engine.spy.P6SpyDriver");
@@ -67,13 +66,12 @@ public class Main {
         properties.put(Environment.HBM2DDL_AUTO, "validate");
         properties.put(Environment.STATEMENT_BATCH_SIZE, "100");
 
-        sessionFactory = new Configuration()
+        return new Configuration()
                 .addAnnotatedClass(City.class)
                 .addAnnotatedClass(Country.class)
                 .addAnnotatedClass(CountryLanguage.class)
                 .addProperties(properties)
                 .buildSessionFactory();
-        return sessionFactory;
     }
 
     private JedisPool prepareRedis() {

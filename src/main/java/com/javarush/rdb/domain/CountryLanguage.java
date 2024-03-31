@@ -1,30 +1,28 @@
 package com.javarush.rdb.domain;
 
 import lombok.Data;
-import org.hibernate.annotations.Type;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
 
 @Data
 @Entity
-@Table(schema = "world", name = "country_language")
+@Table(name = "countrylanguage")
 public class CountryLanguage {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id")
-    private Integer id;
+    @EmbeddedId
+    private CountryLanguageId id;
 
     @ManyToOne
-    @JoinColumn(name = "country_id")
+    @MapsId("countryCode")
+    @JoinColumn(name = "CountryCode", referencedColumnName = "Code")
     private Country country;
 
+    @Column(name = "Language", length = 30, nullable = false, columnDefinition = "CHAR(30) DEFAULT ''")
     private String language;
 
-    @Column(name = "is_official", columnDefinition = "BIT")
-    @Type(type = "org.hibernate.type.NumericBooleanType")
-    private Boolean isOfficial;
+    @Column(name = "IsOfficial", nullable = false, columnDefinition = "ENUM('T','F') DEFAULT 'F'")
+    private Character isOfficial;
 
+    @Column(name = "Percentage", nullable = false, columnDefinition = "DECIMAL(4,1) DEFAULT 0.0")
     private BigDecimal percentage;
-
 }

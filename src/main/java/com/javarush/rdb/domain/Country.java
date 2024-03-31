@@ -4,61 +4,52 @@ import lombok.Data;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
-import java.util.Set;
 
 @Data
 @Entity
-@Table(schema = "world", name = "country")
+@Table(name = "country")
 public class Country {
     @Id
-    @Column(name = "id")
-    private Integer id;
-
+    @Column(name = "Code", length = 3, nullable = false, columnDefinition = "CHAR(3) DEFAULT ''")
     private String code;
 
-    @Column(name = "code_2")
-    private String alternativeCode;
-
+    @Column(name = "Name", length = 52, nullable = false, columnDefinition = "CHAR(52) DEFAULT ''")
     private String name;
 
-    @Column(name = "continent")
-    @Enumerated(EnumType.ORDINAL)
+    @Enumerated(EnumType.STRING)
+    @Column(name = "Continent", nullable = false, columnDefinition = "ENUM('Asia','Europe','North America','Africa','Oceania','Antarctica','South America') DEFAULT 'Asia'")
     private Continent continent;
 
+    @Column(name = "Region", length = 26, nullable = false, columnDefinition = "CHAR(26) DEFAULT ''")
     private String region;
 
-    @Column(name = "surface_area")
+    @Column(name = "SurfaceArea", nullable = false, columnDefinition = "DECIMAL(10,2) DEFAULT 0.00")
     private BigDecimal surfaceArea;
 
-    @Column(name = "indep_year")
-    private Short independenceYear;
+    @Column(name = "IndepYear")
+    private Short indepYear;
 
+    @Column(name = "Population", nullable = false, columnDefinition = "INT DEFAULT 0")
     private Integer population;
 
-    @Column(name = "life_expectancy")
+    @Column(name = "LifeExpectancy", columnDefinition = "DECIMAL(3,1) DEFAULT NULL")
     private BigDecimal lifeExpectancy;
 
-    @Column(name = "gnp")
+    @Column(name = "GNP", columnDefinition = "DECIMAL(10,2) DEFAULT NULL")
     private BigDecimal GNP;
 
-    @Column(name = "gnpo_id")
-    private BigDecimal GNPOId;
+    @Column(name = "GNPOld", columnDefinition = "DECIMAL(10,2) DEFAULT NULL")
+    private BigDecimal GNPOld;
 
-    @Column(name = "local_name")
+    @Column(name = "LocalName", length = 45, nullable = false, columnDefinition = "CHAR(45) DEFAULT ''")
     private String localName;
 
-    @Column(name = "government_form")
+    @Column(name = "GovernmentForm", length = 45, nullable = false, columnDefinition = "CHAR(45) DEFAULT ''")
     private String governmentForm;
 
-    @Column(name = "head_of_state")
+    @Column(name = "HeadOfState", length = 60, columnDefinition = "CHAR(60) DEFAULT NULL")
     private String headOfState;
 
-    @OneToOne
-    @JoinColumn(name = "capital")
-    private City city;
-
-    @OneToMany(fetch = FetchType.EAGER)
-    @JoinColumn(name = "country_id")
-    private Set<CountryLanguage> languages;
-
+    @OneToOne(mappedBy = "country")
+    private City capital;
 }
